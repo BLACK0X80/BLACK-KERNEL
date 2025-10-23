@@ -1,0 +1,10 @@
+build/
+*.iso
+*.bin
+*.elf
+*.o
+*.d
+*.log
+.DS_Store
+Thumbs.db
+

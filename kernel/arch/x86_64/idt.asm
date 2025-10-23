@@ -1,0 +1,115 @@
+BITS 64
+GLOBAL idt_load
+GLOBAL isr0
+GLOBAL isr1
+GLOBAL isr2
+GLOBAL isr3
+GLOBAL isr4
+GLOBAL isr5
+GLOBAL isr6
+GLOBAL isr7
+GLOBAL isr8
+GLOBAL isr9
+GLOBAL isr10
+GLOBAL isr11
+GLOBAL isr12
+GLOBAL isr13
+GLOBAL isr14
+GLOBAL isr15
+GLOBAL isr16
+GLOBAL isr17
+GLOBAL isr18
+GLOBAL isr19
+GLOBAL isr20
+GLOBAL isr21
+GLOBAL isr22
+GLOBAL isr23
+GLOBAL isr24
+GLOBAL isr25
+GLOBAL isr26
+GLOBAL isr27
+GLOBAL isr28
+GLOBAL isr29
+GLOBAL isr30
+GLOBAL isr31
+GLOBAL irq0
+GLOBAL irq1
+GLOBAL irq2
+GLOBAL irq3
+GLOBAL irq4
+GLOBAL irq5
+GLOBAL irq6
+GLOBAL irq7
+GLOBAL irq8
+GLOBAL irq9
+GLOBAL irq10
+GLOBAL irq11
+GLOBAL irq12
+GLOBAL irq13
+GLOBAL irq14
+GLOBAL irq15
+EXTERN interrupt_common_stub
+SECTION .text
+idt_load:
+    lidt [rdi]
+    ret
+%macro ISR_NOERR 1
+%1:
+    push qword 0
+    push qword %0
+    jmp interrupt_common_stub
+%endmacro
+%macro ISR_ERR 1
+%1:
+    push qword %0
+    jmp interrupt_common_stub
+%endmacro
+ISR_NOERR isr0
+ISR_NOERR isr1
+ISR_NOERR isr2
+ISR_NOERR isr3
+ISR_NOERR isr4
+ISR_NOERR isr5
+ISR_NOERR isr6
+ISR_NOERR isr7
+ISR_ERR   isr8
+ISR_NOERR isr9
+ISR_ERR   isr10
+ISR_ERR   isr11
+ISR_ERR   isr12
+ISR_ERR   isr13
+ISR_ERR   isr14
+ISR_NOERR isr15
+ISR_NOERR isr16
+ISR_NOERR isr17
+ISR_NOERR isr18
+ISR_NOERR isr19
+ISR_NOERR isr20
+ISR_NOERR isr21
+ISR_NOERR isr22
+ISR_NOERR isr23
+ISR_NOERR isr24
+ISR_NOERR isr25
+ISR_NOERR isr26
+ISR_NOERR isr27
+ISR_NOERR isr28
+ISR_NOERR isr29
+ISR_NOERR isr30
+ISR_NOERR isr31
+ISR_NOERR irq0
+ISR_NOERR irq1
+ISR_NOERR irq2
+ISR_NOERR irq3
+ISR_NOERR irq4
+ISR_NOERR irq5
+ISR_NOERR irq6
+ISR_NOERR irq7
+ISR_NOERR irq8
+ISR_NOERR irq9
+ISR_NOERR irq10
+ISR_NOERR irq11
+ISR_NOERR irq12
+ISR_NOERR irq13
+ISR_NOERR irq14
+ISR_NOERR irq15
+
