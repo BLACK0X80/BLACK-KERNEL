@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,6,10,15&height=200&section=header&text=PROMETHEUS&fontSize=90&fontColor=fff&animation=twinkling&fontAlignY=35" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,6,10,15&height=200&section=header&text=BLACK-KRENEL&fontSize=90&fontColor=fff&animation=twinkling&fontAlignY=35" width="100%"/>
 
 <br/>
 
