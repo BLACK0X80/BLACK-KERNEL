@@ -10,21 +10,21 @@
 
 <br/>
 
-[![Prometheus](https://img.shields.io/badge/PROMETHEUS-v2.0.0-F75C03?style=for-the-badge&logo=fire&logoColor=white)](https://github.com/BLACK0X80/prometheus)
+[![BLACK-KRENEL](https://img.shields.io/badge/BLACK-KRENEL-v2.0.0-F75C03?style=for-the-badge&logo=fire&logoColor=white)](https://github.com/BLACK0X80/BLACK-KRENEL)
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=for-the-badge&logo=balance-scale&logoColor=white)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-x86__64-10F5CC?style=for-the-badge&logo=intel&logoColor=black)](https://github.com/BLACK0X80/prometheus)
-[![Stars](https://img.shields.io/github/stars/BLACK0X80/prometheus?style=for-the-badge&color=FFD700&logo=github)](https://github.com/BLACK0X80/prometheus/stargazers)
+[![Platform](https://img.shields.io/badge/Platform-x86__64-10F5CC?style=for-the-badge&logo=intel&logoColor=black)](https://github.com/BLACK0X80/BLACK-KRENEL)
+[![Stars](https://img.shields.io/github/stars/BLACK0X80/BLACK-KRENEL?style=for-the-badge&color=FFD700&logo=github)](https://github.com/BLACK0X80/BLACK-KRENEL/stargazers)
 
-[![Build](https://img.shields.io/badge/Build-Passing-32CD32?style=for-the-badge&logo=check-circle&logoColor=white)](https://github.com/BLACK0X80/prometheus)
-[![Coverage](https://img.shields.io/badge/Coverage-96.5%25-00D4FF?style=for-the-badge&logo=codecov&logoColor=black)](https://github.com/BLACK0X80/prometheus)
-[![Architecture](https://img.shields.io/badge/64--bit-Long%20Mode-F75C03?style=for-the-badge&logo=amd&logoColor=white)](https://github.com/BLACK0X80/prometheus)
+[![Build](https://img.shields.io/badge/Build-Passing-32CD32?style=for-the-badge&logo=check-circle&logoColor=white)](https://github.com/BLACK0X80/BLACK-KRENEL)
+[![Coverage](https://img.shields.io/badge/Coverage-96.5%25-00D4FF?style=for-the-badge&logo=codecov&logoColor=black)](https://github.com/BLACK0X80/BLACK-KRENEL)
+[![Architecture](https://img.shields.io/badge/64--bit-Long%20Mode-F75C03?style=for-the-badge&logo=amd&logoColor=white)](https://github.com/BLACK0X80/BLACK-KRENEL)
 [![Bootloader](https://img.shields.io/badge/Multiboot2-Compatible-00D4FF?style=for-the-badge&logo=linux&logoColor=black)](https://www.gnu.org/software/grub/manual/multiboot2/)
 
 <br/>
 
 ### **Freestanding x86_64 Kernel • Multiboot2 Compatible • Production Ready**
 
-**PROMETHEUS** is a high-performance freestanding kernel that brings the power of 64-bit long mode to bare metal. Built with modern memory management, advanced debugging, and production-grade drivers.
+**BLACK-KRENEL** is a high-performance freestanding kernel that brings the power of 64-bit long mode to bare metal. Built with modern memory management, advanced debugging, and production-grade drivers.
 
 [**Documentation**](#documentation) • [**Quick Start**](#quick-start) • [**Architecture**](#architecture)
 
@@ -39,7 +39,7 @@
 <td valign="top" width="33%">
 
 ### Core
-- [Why Prometheus?](#why-prometheus)
+- [Why BLACK-KRENEL?](#why-BLACK-KRENEL)
 - [Key Features](#key-features)
 - [Memory Architecture](#memory-architecture)
 - [Installation](#installation)
@@ -68,7 +68,7 @@
 
 ---
 
-## Why Prometheus?
+## Why BLACK-KRENEL?
 
 <div align="center">
 
@@ -76,7 +76,7 @@
 
 </div>
 
-Modern kernel development has always faced an impossible choice: **performance**, **safety**, or **simplicity**. Prometheus breaks this paradigm with a revolutionary approach to bare-metal systems programming.
+Modern kernel development has always faced an impossible choice: **performance**, **safety**, or **simplicity**. BLACK-KRENEL breaks this paradigm with a revolutionary approach to bare-metal systems programming.
 
 <table>
 <tr>
@@ -124,7 +124,7 @@ Fast compilation
 
 <div align="center">
 
-| Aspect | Traditional Kernels | Prometheus |
+| Aspect | Traditional Kernels | BLACK-KRENEL |
 |:------:|:------------------:|:----------:|
 | **Boot Process** | Complex multi-stage | Clean Multiboot2 transition |
 | **Memory Model** | Fixed allocation | Advanced zone-based system |
@@ -314,8 +314,8 @@ wsl --set-default-version 2
 
 ```bash
 # Clone the repository
-git clone https://github.com/BLACK0X80/prometheus.git
-cd prometheus
+git clone https://github.com/BLACK0X80/BLACK-KRENEL.git
+cd BLACK-KRENEL
 
 # Build kernel
 make
@@ -335,8 +335,8 @@ make run
 
 | Command | Description | Output |
 |:-------:|:------------|:-------|
-| `make` | Build kernel binary | `prometheus.bin` |
-| `make iso` | Create bootable ISO | `prometheus.iso` |
+| `make` | Build kernel binary | `BLACK-KRENEL.bin` |
+| `make iso` | Create bootable ISO | `BLACK-KRENEL.iso` |
 | `make run` | Build and run in QEMU | Serial + VGA output |
 | `make debug` | Start with GDB server | Port 1234 |
 | `make clean` | Remove build artifacts | Clean workspace |
@@ -358,7 +358,7 @@ make run
 [GCC]    kernel/mm/vmm.c → vmm.o
 [GCC]    kernel/mm/buddy.c → buddy.o
 [GCC]    kernel/mm/slab.c → slab.o
-[LD]     Linking prometheus.bin
+[LD]     Linking BLACK-KRENEL.bin
 [GRUB]   Creating bootable ISO
 [SUCCESS] Build completed in 2.34s
 ```
@@ -398,7 +398,7 @@ graph TB
 </div>
 
 ```
-prometheus/
+BLACK-KRENEL/
 ├── boot/                          [Boot & Initialization]
 │   ├── multiboot2.asm            - Multiboot2 header
 │   ├── boot.asm                  - 32→64 bit transition
@@ -467,7 +467,7 @@ prometheus/
 
 ### Comprehensive Debugging Framework
 
-Prometheus features a zero-overhead debug system that can be completely disabled at compile time for production builds.
+BLACK-KRENEL features a zero-overhead debug system that can be completely disabled at compile time for production builds.
 
 </div>
 
@@ -631,7 +631,7 @@ DEBUG_ASSERT(ptr != NULL, "Null pointer dereference");
 ./debug.sh
 
 # Terminal 2: Connect GDB
-gdb prometheus.bin
+gdb BLACK-KRENEL.bin
 (gdb) target remote :1234
 (gdb) break kernel_main
 (gdb) continue
@@ -677,7 +677,7 @@ x/512gx 0xFFFFFFFF80000000
 disassemble kernel_main
 
 # Load symbols
-symbol-file prometheus.bin
+symbol-file BLACK-KRENEL.bin
 ```
 
 ---
@@ -727,7 +727,7 @@ make coverage
 
 ## Known Limitations
 
-While Prometheus provides a solid foundation for bare-metal development, there are several areas for future improvement:
+While BLACK-KRENEL provides a solid foundation for bare-metal development, there are several areas for future improvement:
 
 <table>
 <tr>
@@ -800,7 +800,7 @@ While Prometheus provides a solid foundation for bare-metal development, there a
 
 ```mermaid
 gantt
-    title Prometheus Kernel Roadmap
+    title BLACK-KRENEL Kernel Roadmap
     dateFormat  YYYY-MM
     section Phase 1
     OOM Killer           :2026-01, 2026-03
@@ -915,7 +915,7 @@ gantt
 
 | Kernel | Boot Time | Page Fault | Binary Size |
 |:------:|:---------:|:----------:|:-----------:|
-| **Prometheus** | **0.8ms** | **2.1μs** | **89KB** |
+| **BLACK-KRENEL** | **0.8ms** | **2.1μs** | **89KB** |
 | Linux (minimal) | 15ms | 3.2μs | 1.2MB |
 | xv6 | 2.3ms | 4.1μs | 64KB |
 | seL4 | 1.2ms | 2.8μs | 124KB |
@@ -1023,8 +1023,8 @@ Mentor contributors
 
 ```bash
 # Fork and clone
-git clone https://github.com/YOUR_USERNAME/prometheus.git
-cd prometheus
+git clone https://github.com/YOUR_USERNAME/BLACK-KRENEL.git
+cd BLACK-KRENEL
 
 # Create feature branch
 git checkout -b feature/awesome-feature
@@ -1318,11 +1318,11 @@ int keyboard_available(void);
 
 | Resource | Description | Link |
 |:--------:|:------------|:----:|
-| **Wiki** | Detailed documentation | [View Wiki](https://github.com/BLACK0X80/prometheus/wiki) |
-| **API Docs** | Complete API reference | [View API](https://prometheus-kernel.org/api) |
-| **Tutorials** | Step-by-step guides | [View Tutorials](https://prometheus-kernel.org/tutorials) |
-| **Examples** | Code examples | [View Examples](https://github.com/BLACK0X80/prometheus/tree/main/examples) |
-| **Blog** | Development updates | [Read Blog](https://prometheus-kernel.org/blog) |
+| **Wiki** | Detailed documentation | [View Wiki](https://github.com/BLACK0X80/BLACK-KRENEL/wiki) |
+| **API Docs** | Complete API reference | [View API](https://BLACK-KRENEL-kernel.org/api) |
+| **Tutorials** | Step-by-step guides | [View Tutorials](https://BLACK-KRENEL-kernel.org/tutorials) |
+| **Examples** | Code examples | [View Examples](https://github.com/BLACK0X80/BLACK-KRENEL/tree/main/examples) |
+| **Blog** | Development updates | [Read Blog](https://BLACK-KRENEL-kernel.org/blog) |
 
 </div>
 
@@ -1332,14 +1332,14 @@ int keyboard_available(void);
 
 <div align="center">
 
-### Join the Prometheus Community
+### Join the BLACK-KRENEL Community
 
 <br/>
 
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/prometheus)
-[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/BLACK0X80/prometheus/discussions)
-[![Twitter](https://img.shields.io/badge/Twitter-Follow-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/prometheus_kernel)
-[![Reddit](https://img.shields.io/badge/Reddit-Community-FF4500?style=for-the-badge&logo=reddit&logoColor=white)](https://reddit.com/r/prometheus_kernel)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/BLACK-KRENEL)
+[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/BLACK0X80/BLACK-KRENEL/discussions)
+[![Twitter](https://img.shields.io/badge/Twitter-Follow-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/BLACK-KRENEL_kernel)
+[![Reddit](https://img.shields.io/badge/Reddit-Community-FF4500?style=for-the-badge&logo=reddit&logoColor=white)](https://reddit.com/r/BLACK-KRENEL_kernel)
 
 <br/>
 
@@ -1347,8 +1347,8 @@ int keyboard_available(void);
 
 - **Discord**: Real-time chat and support
 - **GitHub Discussions**: Long-form discussions and Q&A
-- **Stack Overflow**: Tag questions with `prometheus-kernel`
-- **Email**: support@prometheus-kernel.org
+- **Stack Overflow**: Tag questions with `BLACK-KRENEL-kernel`
+- **Email**: support@BLACK-KRENEL-kernel.org
 
 ### Stay Updated
 
@@ -1365,7 +1365,7 @@ int keyboard_available(void);
 
 <div align="center">
 
-**Prometheus Kernel is open source under the MIT License**
+**BLACK-KRENEL Kernel is open source under the MIT License**
 
 </div>
 
@@ -1399,7 +1399,7 @@ SOFTWARE.
 
 <div align="center">
 
-Prometheus stands on the shoulders of giants and wouldn't be possible without the incredible work of the operating systems community.
+BLACK-KRENEL stands on the shoulders of giants and wouldn't be possible without the incredible work of the operating systems community.
 
 <br/>
 
@@ -1420,9 +1420,9 @@ Prometheus stands on the shoulders of giants and wouldn't be possible without th
 - **OSDev.org** for comprehensive documentation and community support
 - **Intel & AMD** for detailed architecture manuals
 - **LLVM/Clang Project** for excellent toolchain support
-- **Early Contributors** who helped shape Prometheus through feedback and code
+- **Early Contributors** who helped shape BLACK-KRENEL through feedback and code
 - **Testing Community** for finding edge cases and improving stability
-- **All Users** who trust Prometheus for their bare-metal projects
+- **All Users** who trust BLACK-KRENEL for their bare-metal projects
 
 ---
 
@@ -1484,15 +1484,15 @@ Latest Release:    Oct 2025
 <tr>
 <td width="50%" valign="top">
 
-**Q: What makes Prometheus different from other kernels?**
+**Q: What makes BLACK-KRENEL different from other kernels?**
 
-A: Prometheus combines production-grade memory management (buddy allocator, slab cache, COW, demand paging) with a comprehensive debug system, all in a clean and well-documented codebase. It's designed for learning and real-world use.
+A: BLACK-KRENEL combines production-grade memory management (buddy allocator, slab cache, COW, demand paging) with a comprehensive debug system, all in a clean and well-documented codebase. It's designed for learning and real-world use.
 
-**Q: Can I use Prometheus in production?**
+**Q: Can I use BLACK-KRENEL in production?**
 
-A: Yes! Prometheus 2.0 is stable and has been tested extensively. It's suitable for embedded systems, research projects, and specialized applications. However, it's not a drop-in replacement for Linux.
+A: Yes! BLACK-KRENEL 2.0 is stable and has been tested extensively. It's suitable for embedded systems, research projects, and specialized applications. However, it's not a drop-in replacement for Linux.
 
-**Q: What hardware does Prometheus support?**
+**Q: What hardware does BLACK-KRENEL support?**
 
 A: Currently x86_64 with QEMU and physical hardware that supports Multiboot2. We have VGA text mode, PS/2 keyboard, serial port, and basic timer support. ARM64 support is planned for v4.0.
 
@@ -1505,7 +1505,7 @@ A: Drivers go in `kernel/drivers/`. Follow the existing patterns (VGA, serial, k
 
 **Q: Can I use C++ instead of C?**
 
-A: Not currently. Prometheus is pure C for simplicity and predictability. C++ support (especially constructors/destructors in kernel context) adds complexity. However, you're welcome to experiment and submit a PR!
+A: Not currently. BLACK-KRENEL is pure C for simplicity and predictability. C++ support (especially constructors/destructors in kernel context) adds complexity. However, you're welcome to experiment and submit a PR!
 
 **Q: How does the debug system work?**
 
@@ -1513,11 +1513,11 @@ A: The debug system uses compile-time macros that completely disappear when `DEB
 
 **Q: What's the best way to learn kernel development?**
 
-A: Start by reading the Prometheus source code (it's well-commented), check out [OSDev.org](https://wiki.osdev.org), read the Intel/AMD manuals, and don't be afraid to experiment. Break things, debug them, learn!
+A: Start by reading the BLACK-KRENEL source code (it's well-commented), check out [OSDev.org](https://wiki.osdev.org), read the Intel/AMD manuals, and don't be afraid to experiment. Break things, debug them, learn!
 
-**Q: Can I use Prometheus for my university project?**
+**Q: Can I use BLACK-KRENEL for my university project?**
 
-A: Absolutely! Prometheus is MIT licensed and perfect for educational purposes. Many students have used it as a base for OS course projects. Just make sure to cite it properly.
+A: Absolutely! BLACK-KRENEL is MIT licensed and perfect for educational purposes. Many students have used it as a base for OS course projects. Just make sure to cite it properly.
 
 </td>
 </tr>
@@ -1530,9 +1530,9 @@ A: Absolutely! Prometheus is MIT licensed and perfect for educational purposes. 
 ## Start Your Kernel Journey
 
 ```bash
-# Clone Prometheus
-git clone https://github.com/BLACK0X80/prometheus.git
-cd prometheus
+# Clone BLACK-KRENEL
+git clone https://github.com/BLACK0X80/BLACK-KRENEL.git
+cd BLACK-KRENEL
 
 # Build and run
 make run
@@ -1543,10 +1543,10 @@ make run
 
 <br/>
 
-[![Download](https://img.shields.io/badge/Download-Latest%20Release-F75C03?style=for-the-badge&logo=download&logoColor=white)](https://github.com/BLACK0X80/prometheus/releases)
-[![Documentation](https://img.shields.io/badge/Read-Documentation-10F5CC?style=for-the-badge&logo=book&logoColor=black)](https://prometheus-kernel.org/docs)
-[![Examples](https://img.shields.io/badge/View-Examples-00D4FF?style=for-the-badge&logo=code&logoColor=black)](https://github.com/BLACK0X80/prometheus/tree/main/examples)
-[![Join Discord](https://img.shields.io/badge/Join-Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/prometheus)
+[![Download](https://img.shields.io/badge/Download-Latest%20Release-F75C03?style=for-the-badge&logo=download&logoColor=white)](https://github.com/BLACK0X80/BLACK-KRENEL/releases)
+[![Documentation](https://img.shields.io/badge/Read-Documentation-10F5CC?style=for-the-badge&logo=book&logoColor=black)](https://BLACK-KRENEL-kernel.org/docs)
+[![Examples](https://img.shields.io/badge/View-Examples-00D4FF?style=for-the-badge&logo=code&logoColor=black)](https://github.com/BLACK0X80/BLACK-KRENEL/tree/main/examples)
+[![Join Discord](https://img.shields.io/badge/Join-Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/BLACK-KRENEL)
 
 <br/><br/>
 
@@ -1556,7 +1556,7 @@ make run
 
 <br/>
 
-**Prometheus Kernel** — *Where systems programming meets elegance*
+**BLACK-KRENEL Kernel** — *Where systems programming meets elegance*
 
 <br/>
 
