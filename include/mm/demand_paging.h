@@ -3,6 +3,21 @@
 #include "../kernel/spinlock.h"
 #include "../kernel/vmm.h"
 
+/**
+ * Maximum number of concurrent address spaces (processes)
+ * 
+ * This limit is based on:
+ * - Typical server workload: 100-200 concurrent processes
+ * - Safety margin for burst scenarios
+ * - Memory overhead: 256 * sizeof(vm_address_space_t) ≈ 8KB
+ * 
+ * Can be increased if needed, but consider:
+ * - Memory overhead grows linearly with this value
+ * - Linear search performance in demand_paging_get_address_space()
+ * - For >256 processes, consider hash table instead of array
+ */
+#define MAX_ADDRESS_SPACES 256
+
 // VM region flags
 #define VM_FLAG_DEMAND_PAGED 0x01
 #define VM_FLAG_ZERO_FILL 0x02
@@ -10,10 +25,11 @@
 
 // VM region structure for tracking virtual memory regions
 typedef struct vm_region {
-    uint64_t start;
-    uint64_t end;
-    uint32_t flags;
-    struct vm_region *next;
+    uint64_t start;              // Region start address (page-aligned)
+    uint64_t end;                // Region end address (page-aligned)
+    uint32_t flags;              // VM_FLAG_* flags
+    spinlock_t page_fault_lock;  // Synchronizes concurrent page fault handling
+    struct vm_region *next;      // Next region in linked list
 } vm_region_t;
 
 // Address space structure containing region list

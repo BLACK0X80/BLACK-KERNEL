@@ -7,7 +7,9 @@
 #define COW_FLAG_MASK 0x200
 
 // Hash table size for page reference tracking
+// IMPORTANT: Must be a power of 2 for efficient bitwise AND hashing
 #define COW_HASH_SIZE 1024
+#define COW_HASH_MASK (COW_HASH_SIZE - 1)  // For bitwise AND (faster than modulo)
 
 // Page reference structure for tracking shared physical pages
 typedef struct page_ref {

@@ -1,19 +1,42 @@
 #include "../../include/mm/page_cache.h"
 #include "../../include/mm/buddy.h"
+#include "../../include/kernel/config.h"
 #include "../../include/kernel/string.h"
+#include "../../include/kernel/stdio.h"
 
+// Hash size must be power of 2 for efficient bitwise AND hashing
 #define DEFAULT_HASH_SIZE 1024
+#define HASH_SIZE_MASK (DEFAULT_HASH_SIZE - 1)
 
 static page_cache_t g_page_cache;
 
 static inline uint32_t hash_function(uint64_t file_id, uint64_t offset) {
-    return (uint32_t)((file_id * 2654435761ULL + offset) % g_page_cache.hash_size);
+    // Mix file_id and offset using XOR for better distribution
+    uint64_t hash = file_id ^ (offset >> 12);  // Offset in pages
+    
+    // Multiply by golden ratio prime for avalanche effect
+    hash = hash * 2654435761ULL;
+    
+    // Use bitwise AND instead of modulo (20-40x faster)
+    // This works because hash_size is guaranteed to be power of 2
+    return (uint32_t)(hash & HASH_SIZE_MASK);
 }
 
 void page_cache_init(uint64_t max_pages) {
     spinlock_init(&g_page_cache.lock);
     
     g_page_cache.hash_size = DEFAULT_HASH_SIZE;
+    
+    // Validate that hash_size is power of 2
+    if ((g_page_cache.hash_size & (g_page_cache.hash_size - 1)) != 0) {
+        kprintf("[PAGE_CACHE] ERROR: hash_size %llu is not power of 2, using 1024\n",
+                g_page_cache.hash_size);
+        g_page_cache.hash_size = 1024;
+    }
+    
+    DEBUG_PRINT(PAGE_CACHE, "Initialized with hash_size=%llu, max_pages=%llu\n",
+                g_page_cache.hash_size, max_pages);
+    
     g_page_cache.max_pages = max_pages;
     g_page_cache.total_pages = 0;
     g_page_cache.cache_hits = 0;

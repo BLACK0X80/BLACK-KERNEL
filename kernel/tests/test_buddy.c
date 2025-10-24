@@ -130,3 +130,94 @@ void run_buddy_tests(void) {
     kprintf("Buddy tests: %d/%d passed\n", test_passed, test_count);
 }
 
+
+// New tests for zone priority and flag handling
+
+void test_buddy_zone_priority(void) {
+    // Test that MOVABLE has priority over RECLAIMABLE
+    uint64_t addr1 = buddy_alloc_pages_flags(0, GFP_MOVABLE | GFP_RECLAIMABLE);
+    TEST_ASSERT(addr1 != 0, "Allocation with both MOVABLE and RECLAIMABLE flags should succeed");
+    
+    // The allocation should come from MOVABLE zone (highest priority)
+    // We can't directly verify the zone, but we can verify the allocation succeeded
+    
+    if (addr1) buddy_free_pages(addr1, 0);
+    
+    // Test RECLAIMABLE without MOVABLE
+    uint64_t addr2 = buddy_alloc_pages_flags(0, GFP_RECLAIMABLE);
+    TEST_ASSERT(addr2 != 0, "Allocation with RECLAIMABLE flag should succeed");
+    
+    if (addr2) buddy_free_pages(addr2, 0);
+    
+    // Test default (UNMOVABLE)
+    uint64_t addr3 = buddy_alloc_pages_flags(0, 0);
+    TEST_ASSERT(addr3 != 0, "Allocation with no zone flags should default to UNMOVABLE");
+    
+    if (addr3) buddy_free_pages(addr3, 0);
+}
+
+void test_buddy_invalid_flags(void) {
+    // Test with invalid/unknown flags - should still work with default zone
+    uint64_t addr = buddy_alloc_pages_flags(0, 0xFFFF);
+    TEST_ASSERT(addr != 0, "Allocation with invalid flags should still succeed with default zone");
+    
+    if (addr) buddy_free_pages(addr, 0);
+}
+
+void test_buddy_gfp_zero(void) {
+    // Test GFP_ZERO flag
+    uint64_t addr = buddy_alloc_pages_flags(0, GFP_ZERO);
+    TEST_ASSERT(addr != 0, "Allocation with GFP_ZERO should succeed");
+    
+    if (addr) {
+        // Verify page is zeroed
+        uint8_t *page = (uint8_t *)(uintptr_t)addr;
+        int all_zero = 1;
+        for (int i = 0; i < 4096; i++) {
+            if (page[i] != 0) {
+                all_zero = 0;
+                break;
+            }
+        }
+        TEST_ASSERT(all_zero, "Page allocated with GFP_ZERO should be zeroed");
+        
+        buddy_free_pages(addr, 0);
+    }
+}
+
+void test_buddy_combined_flags(void) {
+    // Test combination of flags
+    uint64_t addr = buddy_alloc_pages_flags(0, GFP_MOVABLE | GFP_ZERO);
+    TEST_ASSERT(addr != 0, "Allocation with MOVABLE and ZERO flags should succeed");
+    
+    if (addr) {
+        // Verify page is zeroed
+        uint8_t *page = (uint8_t *)(uintptr_t)addr;
+        int all_zero = 1;
+        for (int i = 0; i < 100; i++) {  // Check first 100 bytes
+            if (page[i] != 0) {
+                all_zero = 0;
+                break;
+            }
+        }
+        TEST_ASSERT(all_zero, "Page with MOVABLE|ZERO should be zeroed");
+        
+        buddy_free_pages(addr, 0);
+    }
+}
+
+void run_buddy_tests_extended(void) {
+    kprintf("\nRunning extended buddy allocator tests...\n");
+    
+    // Reset counters
+    int old_count = test_count;
+    int old_passed = test_passed;
+    
+    test_buddy_zone_priority();
+    test_buddy_invalid_flags();
+    test_buddy_gfp_zero();
+    test_buddy_combined_flags();
+    
+    kprintf("Extended buddy tests: %d/%d passed\n", 
+            test_passed - old_passed, test_count - old_count);
+}

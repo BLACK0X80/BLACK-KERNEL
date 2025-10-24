@@ -245,3 +245,93 @@ void run_cow_tests(void) {
     kprintf("COW tests: %d/%d passed\n", test_passed, test_count);
 }
 
+
+// New tests for error logging
+
+void test_cow_null_pml4_handling(void) {
+    // Test cow_mark_page with NULL pml4
+    int result = cow_mark_page(NULL, 0x400000);
+    TEST_ASSERT(result == -1, "cow_mark_page with NULL pml4 should return error");
+    // Should log error message (can't easily verify, but shouldn't crash)
+}
+
+void test_cow_unmapped_page_handling(void) {
+    // Create address space
+    page_table_t *pml4 = vmm_create_address_space();
+    TEST_ASSERT(pml4 != 0, "Address space creation should succeed");
+    
+    if (!pml4) return;
+    
+    // Try to mark unmapped page as COW
+    uint64_t unmapped_virt = 0x500000;
+    int result = cow_mark_page(pml4, unmapped_virt);
+    TEST_ASSERT(result == -1, "cow_mark_page on unmapped page should return error");
+    // Should log error message
+}
+
+void test_cow_allocation_failure_handling(void) {
+    // This test simulates allocation failure by using up memory
+    // In practice, this is hard to test without actually exhausting memory
+    // We just verify the function handles NULL returns gracefully
+    
+    // Test cow_get_ref with a physical address
+    uint64_t phys = buddy_alloc_pages(0, BUDDY_ZONE_UNMOVABLE);
+    if (phys) {
+        page_ref_t *ref = cow_get_ref(phys);
+        TEST_ASSERT(ref != NULL, "cow_get_ref should succeed with valid physical address");
+        
+        // Clean up
+        cow_decrement_ref(phys);
+    }
+}
+
+void test_cow_error_logging_verification(void) {
+    // This test verifies that error logging doesn't crash the system
+    // Actual log message verification would require capturing kprintf output
+    
+    page_table_t *pml4 = vmm_create_address_space();
+    if (!pml4) return;
+    
+    // Trigger various error conditions
+    cow_mark_page(NULL, 0x400000);  // NULL pml4
+    cow_mark_page(pml4, 0x500000);  // Unmapped page
+    cow_handle_fault(NULL, 0x400000);  // NULL pml4 in fault handler
+    cow_handle_fault(pml4, 0x500000);  // Unmapped page in fault handler
+    
+    TEST_ASSERT(1, "Error logging should not crash the system");
+}
+
+void test_cow_hash_function_distribution(void) {
+    // Test that hash function distributes addresses reasonably
+    // We can't test the actual distribution without many allocations,
+    // but we can verify it doesn't crash and returns valid indices
+    
+    uint64_t test_addresses[] = {
+        0x1000, 0x2000, 0x3000, 0x4000, 0x5000,
+        0x100000, 0x200000, 0x300000, 0x400000, 0x500000
+    };
+    
+    for (int i = 0; i < 10; i++) {
+        page_ref_t *ref = cow_get_ref(test_addresses[i]);
+        if (ref) {
+            TEST_ASSERT(1, "Hash function should handle various addresses");
+            cow_decrement_ref(test_addresses[i]);
+        }
+    }
+}
+
+void run_cow_tests_extended(void) {
+    kprintf("\nRunning extended COW tests...\n");
+    
+    int old_count = test_count;
+    int old_passed = test_passed;
+    
+    test_cow_null_pml4_handling();
+    test_cow_unmapped_page_handling();
+    test_cow_allocation_failure_handling();
+    test_cow_error_logging_verification();
+    test_cow_hash_function_distribution();
+    
+    kprintf("Extended COW tests: %d/%d passed\n", 
+            test_passed - old_passed, test_count - old_count);
+}

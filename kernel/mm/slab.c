@@ -1,5 +1,6 @@
 #include "../../include/mm/slab.h"
 #include "../../include/mm/buddy.h"
+#include "../../include/kernel/config.h"
 #include "../../include/kernel/string.h"
 #include "../../include/kernel/stdio.h"
 
@@ -21,18 +22,18 @@ static inline size_t align_up(size_t size, size_t alignment) {
 slab_cache_t *slab_cache_create(const char *name, size_t size, size_t align) {
     // Validate parameters
     if (!name) {
-        kprintf("[SLAB] ERROR: NULL name in cache_create\n");
+        kprintf("[SLAB] ERROR: slab_cache_create called with NULL name\n");
         return NULL;
     }
     
     if (size == 0) {
-        kprintf("[SLAB] ERROR: Zero size in cache_create for '%s'\n", name);
+        kprintf("[SLAB] ERROR: slab_cache_create called with zero size\n");
         return NULL;
     }
     
     if (size > BUDDY_PAGE_SIZE) {
-        kprintf("[SLAB] ERROR: Object size %u too large for '%s' (max %u)\n", 
-                (unsigned)size, name, BUDDY_PAGE_SIZE);
+        kprintf("[SLAB] ERROR: Object size %zu too large (max %u) for cache '%s'\n", 
+                size, BUDDY_PAGE_SIZE, name);
         return NULL;
     }
     
@@ -43,7 +44,10 @@ slab_cache_t *slab_cache_create(const char *name, size_t size, size_t align) {
     // Allocate memory for cache structure
     uint64_t cache_addr = buddy_alloc_pages(0, BUDDY_ZONE_UNMOVABLE);
     if (cache_addr == 0) {
+        uint64_t free_pages = buddy_get_free_pages();
+        uint64_t total_pages = buddy_get_total_pages();
         kprintf("[SLAB] ERROR: Failed to allocate cache structure for '%s'\n", name);
+        kprintf("[SLAB] ERROR: Memory stats: %llu/%llu pages free\n", free_pages, total_pages);
         return NULL;
     }
     
@@ -198,7 +202,7 @@ static void slab_move_to_list(slab_t **from_list, slab_t **to_list, slab_t *slab
 void *slab_alloc(slab_cache_t *cache) {
     // Validate cache pointer
     if (!cache) {
-        kprintf("[SLAB] ERROR: NULL cache in slab_alloc\n");
+        kprintf("[SLAB] ERROR: slab_alloc called with NULL cache\n");
         return NULL;
     }
     
@@ -254,6 +258,8 @@ void *slab_alloc(slab_cache_t *cache) {
     if (obj) {
         cache->total_allocations++;
     } else {
+        DEBUG_PRINT(SLAB, "Failed to allocate from cache '%s' after creating new slab\n", 
+                    cache->name);
         kprintf("[SLAB] ERROR: Failed to allocate object from cache '%s'\n", cache->name);
     }
     
@@ -296,12 +302,12 @@ static void slab_free_to_slab(slab_cache_t *cache, slab_t *slab, void *object) {
 void slab_free(slab_cache_t *cache, void *object) {
     // Validate parameters
     if (!cache) {
-        kprintf("[SLAB] ERROR: NULL cache in slab_free\n");
+        kprintf("[SLAB] ERROR: slab_free called with NULL cache\n");
         return;
     }
     
     if (!object) {
-        kprintf("[SLAB] ERROR: NULL object in slab_free for cache '%s'\n", cache->name);
+        kprintf("[SLAB] ERROR: slab_free called with NULL object for cache '%s'\n", cache->name);
         return;
     }
     
@@ -339,6 +345,9 @@ void slab_free(slab_cache_t *cache, void *object) {
         }
         
         cache->total_frees++;
+    } else {
+        kprintf("[SLAB] WARNING: Freeing object %p not found in cache '%s'\n", 
+                object, cache->name);
     }
     
     spinlock_release(&cache->lock);

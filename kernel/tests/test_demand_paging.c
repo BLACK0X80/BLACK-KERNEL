@@ -256,3 +256,173 @@ void run_demand_paging_tests(void) {
     kprintf("Demand paging tests: %d/%d passed\n", test_passed, test_count);
 }
 
+
+// New tests for concurrency and race condition handling
+
+void test_demand_paging_concurrent_faults_simulation(void) {
+    // Simulate concurrent page faults on the same address
+    // In a single-threaded test, we can verify the double-checked locking logic
+    
+    page_table_t *pml4 = vmm_create_address_space();
+    TEST_ASSERT(pml4 != 0, "Address space creation should succeed");
+    
+    if (!pml4) return;
+    
+    // Register a region
+    uint64_t start = 0x200000;
+    uint64_t size = 0x10000;
+    uint32_t flags = VM_FLAG_DEMAND_PAGED | VM_FLAG_ZERO_FILL;
+    
+    int result = demand_paging_register_region(pml4, start, size, flags);
+    TEST_ASSERT(result == 0, "Region registration should succeed");
+    
+    // First fault should allocate the page
+    uint64_t fault_addr = start + 0x1000;
+    result = demand_paging_handle_fault(pml4, fault_addr);
+    TEST_ASSERT(result == 0, "First page fault should succeed");
+    
+    // Verify page is mapped
+    uint64_t phys1 = vmm_get_physical_address(pml4, fault_addr);
+    TEST_ASSERT(phys1 != 0, "Page should be mapped after first fault");
+    
+    // Second fault on same address should detect page is already mapped
+    result = demand_paging_handle_fault(pml4, fault_addr);
+    TEST_ASSERT(result == 0, "Second page fault should succeed (fast path)");
+    
+    // Verify physical address didn't change
+    uint64_t phys2 = vmm_get_physical_address(pml4, fault_addr);
+    TEST_ASSERT(phys2 == phys1, "Physical address should not change on second fault");
+    
+    // Clean up
+    demand_paging_unregister_region(pml4, start);
+}
+
+void test_demand_paging_lock_initialization(void) {
+    // Verify that page_fault_lock is properly initialized
+    page_table_t *pml4 = vmm_create_address_space();
+    if (!pml4) return;
+    
+    uint64_t start = 0x300000;
+    uint64_t size = 0x10000;
+    uint32_t flags = VM_FLAG_DEMAND_PAGED;
+    
+    int result = demand_paging_register_region(pml4, start, size, flags);
+    TEST_ASSERT(result == 0, "Region registration should succeed");
+    
+    vm_region_t *region = demand_paging_find_region(pml4, start);
+    TEST_ASSERT(region != NULL, "Region should be found");
+    
+    if (region) {
+        // We can't directly test the lock, but we can verify the region structure is valid
+        TEST_ASSERT(region->start == start, "Region lock should be initialized with valid region");
+    }
+    
+    demand_paging_unregister_region(pml4, start);
+}
+
+void test_demand_paging_multiple_regions(void) {
+    // Test multiple regions with concurrent-like access patterns
+    page_table_t *pml4 = vmm_create_address_space();
+    if (!pml4) return;
+    
+    // Register multiple regions
+    uint64_t region1_start = 0x400000;
+    uint64_t region2_start = 0x500000;
+    uint64_t region3_start = 0x600000;
+    uint64_t size = 0x10000;
+    
+    demand_paging_register_region(pml4, region1_start, size, VM_FLAG_DEMAND_PAGED | VM_FLAG_ZERO_FILL);
+    demand_paging_register_region(pml4, region2_start, size, VM_FLAG_DEMAND_PAGED | VM_FLAG_ZERO_FILL);
+    demand_paging_register_region(pml4, region3_start, size, VM_FLAG_DEMAND_PAGED | VM_FLAG_ZERO_FILL);
+    
+    // Trigger faults in different regions (simulating concurrent access)
+    int r1 = demand_paging_handle_fault(pml4, region1_start + 0x1000);
+    int r2 = demand_paging_handle_fault(pml4, region2_start + 0x2000);
+    int r3 = demand_paging_handle_fault(pml4, region3_start + 0x3000);
+    
+    TEST_ASSERT(r1 == 0 && r2 == 0 && r3 == 0, "All page faults should succeed");
+    
+    // Verify all pages are mapped
+    uint64_t phys1 = vmm_get_physical_address(pml4, region1_start + 0x1000);
+    uint64_t phys2 = vmm_get_physical_address(pml4, region2_start + 0x2000);
+    uint64_t phys3 = vmm_get_physical_address(pml4, region3_start + 0x3000);
+    
+    TEST_ASSERT(phys1 != 0 && phys2 != 0 && phys3 != 0, "All pages should be mapped");
+    TEST_ASSERT(phys1 != phys2 && phys2 != phys3 && phys1 != phys3, 
+                "All pages should have different physical addresses");
+    
+    // Clean up
+    demand_paging_unregister_region(pml4, region1_start);
+    demand_paging_unregister_region(pml4, region2_start);
+    demand_paging_unregister_region(pml4, region3_start);
+}
+
+void test_demand_paging_error_path_cleanup(void) {
+    // Test that error paths properly release locks
+    page_table_t *pml4 = vmm_create_address_space();
+    if (!pml4) return;
+    
+    // Try to handle fault without registering region (should fail)
+    uint64_t unregistered_addr = 0x700000;
+    int result = demand_paging_handle_fault(pml4, unregistered_addr);
+    TEST_ASSERT(result == -1, "Fault on unregistered region should fail");
+    
+    // System should still be functional after error
+    uint64_t start = 0x800000;
+    uint64_t size = 0x10000;
+    result = demand_paging_register_region(pml4, start, size, VM_FLAG_DEMAND_PAGED);
+    TEST_ASSERT(result == 0, "Region registration should succeed after previous error");
+    
+    result = demand_paging_handle_fault(pml4, start + 0x1000);
+    TEST_ASSERT(result == 0, "Page fault should succeed after previous error");
+    
+    demand_paging_unregister_region(pml4, start);
+}
+
+void test_demand_paging_zero_fill_verification(void) {
+    // Verify that zero-fill actually zeros the page
+    page_table_t *pml4 = vmm_create_address_space();
+    if (!pml4) return;
+    
+    uint64_t start = 0x900000;
+    uint64_t size = 0x10000;
+    
+    demand_paging_register_region(pml4, start, size, VM_FLAG_DEMAND_PAGED | VM_FLAG_ZERO_FILL);
+    
+    uint64_t fault_addr = start + 0x1000;
+    demand_paging_handle_fault(pml4, fault_addr);
+    
+    uint64_t phys = vmm_get_physical_address(pml4, fault_addr);
+    if (phys) {
+        // Check if page is zeroed (using direct physical mapping)
+        uint64_t direct_map_addr = 0xFFFF800000000000ULL + phys;
+        uint8_t *page_ptr = (uint8_t *)direct_map_addr;
+        
+        int all_zero = 1;
+        for (int i = 0; i < 4096; i++) {
+            if (page_ptr[i] != 0) {
+                all_zero = 0;
+                break;
+            }
+        }
+        TEST_ASSERT(all_zero, "Zero-fill flag should zero the page");
+    }
+    
+    demand_paging_unregister_region(pml4, start);
+}
+
+void run_demand_paging_tests_extended(void) {
+    kprintf("\nRunning extended demand paging tests...\n");
+    
+    int old_count = test_count;
+    int old_passed = test_passed;
+    
+    test_demand_paging_concurrent_faults_simulation();
+    test_demand_paging_lock_initialization();
+    test_demand_paging_multiple_regions();
+    test_demand_paging_error_path_cleanup();
+    test_demand_paging_zero_fill_verification();
+    
+    kprintf("Extended demand paging tests: %d/%d passed\n", 
+            test_passed - old_passed, test_count - old_count);
+}

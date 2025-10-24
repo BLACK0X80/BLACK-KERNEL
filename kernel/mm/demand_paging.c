@@ -1,7 +1,9 @@
 #include "../../include/mm/demand_paging.h"
 #include "../../include/mm/buddy.h"
 #include "../../include/mm/slab.h"
+#include "../../include/kernel/config.h"
 #include "../../include/kernel/string.h"
+#include "../../include/kernel/stdio.h"
 
 // Global address space list
 #define MAX_ADDRESS_SPACES 256
@@ -119,8 +121,12 @@ int demand_paging_register_region(page_table_t *pml4, uint64_t start, uint64_t s
     region->start = aligned_start;
     region->end = aligned_end;
     region->flags = flags;
+    spinlock_init(&region->page_fault_lock);  // Initialize per-region lock
     region->next = as->regions;
     as->regions = region;
+    
+    DEBUG_PRINT(DEMAND_PAGING, "Registered region [0x%llx, 0x%llx) with flags 0x%x\n",
+                aligned_start, aligned_end, flags);
     
     spinlock_release(&as->lock);
     return 0;
@@ -134,23 +140,43 @@ int demand_paging_handle_fault(page_table_t *pml4, uint64_t virt_addr) {
     // Find the region containing this address
     vm_region_t *region = demand_paging_find_region(pml4, aligned_addr);
     if (!region) {
+        DEBUG_PRINT(DEMAND_PAGING, "Address 0x%llx not in any registered region\n", virt_addr);
         return -1;  // Address not in any registered region
     }
     
     // Check if region supports demand paging
     if (!(region->flags & VM_FLAG_DEMAND_PAGED)) {
+        DEBUG_PRINT(DEMAND_PAGING, "Region [0x%llx, 0x%llx) does not support demand paging\n",
+                    region->start, region->end);
         return -1;
     }
     
-    // Check if page is already mapped
+    // First check (unlocked, fast path) - avoid lock if page already mapped
     uint64_t existing_phys = vmm_get_physical_address(pml4, aligned_addr);
     if (existing_phys != 0) {
-        return -1;  // Page already mapped, not a demand paging fault
+        DEBUG_PRINT(DEMAND_PAGING, "Page already mapped at 0x%llx (fast path)\n", aligned_addr);
+        return 0;  // Page already mapped by another thread
     }
+    
+    // Acquire per-region lock for synchronized page fault handling
+    spinlock_acquire(&region->page_fault_lock);
+    
+    // Second check (locked) - prevent race condition
+    existing_phys = vmm_get_physical_address(pml4, aligned_addr);
+    if (existing_phys != 0) {
+        // Another thread mapped the page while we were waiting for the lock
+        spinlock_release(&region->page_fault_lock);
+        DEBUG_PRINT(DEMAND_PAGING, "Page already mapped at 0x%llx (race detected)\n", aligned_addr);
+        return 0;
+    }
+    
+    DEBUG_PRINT(DEMAND_PAGING, "Handling page fault at 0x%llx\n", aligned_addr);
     
     // Allocate a physical page
     uint64_t phys_addr = buddy_alloc_pages(0, BUDDY_ZONE_MOVABLE);
     if (phys_addr == 0) {
+        spinlock_release(&region->page_fault_lock);
+        kprintf("[DEMAND_PAGING] ERROR: Out of memory for page fault at 0x%llx\n", aligned_addr);
         return -1;  // Out of memory
     }
     
@@ -163,12 +189,16 @@ int demand_paging_handle_fault(page_table_t *pml4, uint64_t virt_addr) {
         for (uint64_t i = 0; i < BUDDY_PAGE_SIZE; i++) {
             page_ptr[i] = 0;
         }
+        DEBUG_PRINT(DEMAND_PAGING, "Zero-filled page at phys 0x%llx\n", phys_addr);
     }
     
     // Map the page in the page table
     uint32_t flags = VMM_FLAG_PRESENT | VMM_FLAG_WRITABLE | VMM_FLAG_USER;
     vmm_map_page(pml4, aligned_addr, phys_addr, flags);
     
+    DEBUG_PRINT(DEMAND_PAGING, "Mapped virt 0x%llx -> phys 0x%llx\n", aligned_addr, phys_addr);
+    
+    spinlock_release(&region->page_fault_lock);
     return 0;
 }
 

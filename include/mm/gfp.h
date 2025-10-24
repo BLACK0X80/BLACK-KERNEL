@@ -12,6 +12,10 @@
 #define GFP_DMA         0x08    // Allocate from DMA-capable memory
 
 // Zone modifiers
+// Zone priority: MOVABLE > RECLAIMABLE > UNMOVABLE
+// - MOVABLE: Pages that can be relocated (user allocations, page cache)
+// - RECLAIMABLE: Pages that can be freed under memory pressure (slab caches)
+// - UNMOVABLE: Permanent kernel allocations (page tables, kernel stacks)
 #define GFP_UNMOVABLE   0x00    // Allocate from unmovable zone (default)
 #define GFP_RECLAIMABLE 0x10    // Allocate from reclaimable zone
 #define GFP_MOVABLE     0x20    // Allocate from movable zone
@@ -21,10 +25,13 @@
 #define GFP_ATOMIC_ZERO (GFP_ATOMIC | GFP_ZERO)
 
 // Helper macros to extract zone type from flags
-#define GFP_ZONE_MASK   0x30
+#define GFP_ZONE_MASK   0x30    // Mask for zone bits (GFP_RECLAIMABLE | GFP_MOVABLE)
+
+// Extract zone type from GFP flags with correct priority
+// Priority: MOVABLE > RECLAIMABLE > UNMOVABLE
 #define GFP_GET_ZONE(flags) \
-    (((flags) & GFP_RECLAIMABLE) ? BUDDY_ZONE_RECLAIMABLE : \
-     ((flags) & GFP_MOVABLE) ? BUDDY_ZONE_MOVABLE : \
+    (((flags) & GFP_MOVABLE) ? BUDDY_ZONE_MOVABLE : \
+     ((flags) & GFP_RECLAIMABLE) ? BUDDY_ZONE_RECLAIMABLE : \
      BUDDY_ZONE_UNMOVABLE)
 
 // Memory allocation functions with flags

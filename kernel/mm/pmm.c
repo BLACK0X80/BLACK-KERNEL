@@ -5,23 +5,23 @@
 
 #define FRAME_SIZE 4096ULL
 
-// Compatibility layer: PMM now uses buddy allocator as backend
+// PMM is now a thin wrapper around the buddy allocator
 static uint64_t g_pmm_total = 0;
 static uint64_t g_pmm_free = 0;
 static int g_buddy_initialized = 0;
-void pmm_mark_region_used(uint64_t base, uint64_t size) {
-  // This function is kept for compatibility but is now a no-op
-  // The buddy allocator handles region management internally
-  (void)base;
-  (void)size;
-}
-
-void pmm_mark_region_free(uint64_t base, uint64_t size) {
-  // This function is kept for compatibility but is now a no-op
-  // The buddy allocator handles region management internally
-  (void)base;
-  (void)size;
-}
+/**
+ * Initialize Physical Memory Manager
+ * 
+ * The PMM is now a thin wrapper around the buddy allocator.
+ * This function parses the multiboot memory map and initializes the buddy
+ * allocator with the largest available memory region.
+ * 
+ * The buddy allocator handles all physical memory management internally,
+ * including region tracking, allocation, and freeing.
+ * 
+ * @param mmap Multiboot memory map
+ * @param mmap_size Size of memory map in bytes
+ */
 void pmm_init(multiboot_mmap_entry_t *mmap, uint32_t mmap_size) {
   // Parse memory map to find the largest usable region
   uint64_t memory_start = 0;

@@ -1,4 +1,6 @@
 #include "../../include/mm/buddy.h"
+#include "../../include/mm/gfp.h"
+#include "../../include/kernel/config.h"
 #include "../../include/kernel/string.h"
 #include "../../include/kernel/stdio.h"
 
@@ -386,25 +388,45 @@ void buddy_dump_zone(buddy_zone_type_t zone_type) {
 
 // Allocation with GFP flags support
 uint64_t buddy_alloc_pages_flags(uint32_t order, uint32_t flags) {
-    // Extract zone type from flags
-    buddy_zone_type_t zone_type = BUDDY_ZONE_UNMOVABLE;
-    
-    if (flags & 0x10) {  // GFP_RECLAIMABLE
-        zone_type = BUDDY_ZONE_RECLAIMABLE;
-    } else if (flags & 0x20) {  // GFP_MOVABLE
-        zone_type = BUDDY_ZONE_MOVABLE;
+    // Validate flags - check for unknown/unsupported flags
+    uint32_t valid_flags = GFP_ZONE_MASK | GFP_ZERO | GFP_ATOMIC | GFP_NOWAIT | GFP_DMA | GFP_KERNEL;
+    if ((flags & ~valid_flags) != 0) {
+        DEBUG_PRINT(BUDDY, "Invalid flags 0x%x detected, proceeding with valid flags only\n", flags);
     }
     
-    // Allocate pages
+    // Extract zone type from flags with correct priority
+    // Priority: MOVABLE > RECLAIMABLE > UNMOVABLE
+    buddy_zone_type_t zone_type = BUDDY_ZONE_UNMOVABLE;  // Default
+    
+    if (flags & GFP_MOVABLE) {
+        // MOVABLE has highest priority for user allocations
+        zone_type = BUDDY_ZONE_MOVABLE;
+        DEBUG_PRINT(BUDDY, "Selected MOVABLE zone for allocation (order %u)\n", order);
+    } else if (flags & GFP_RECLAIMABLE) {
+        // RECLAIMABLE for kernel caches that can be freed
+        zone_type = BUDDY_ZONE_RECLAIMABLE;
+        DEBUG_PRINT(BUDDY, "Selected RECLAIMABLE zone for allocation (order %u)\n", order);
+    } else {
+        // UNMOVABLE for permanent kernel allocations
+        DEBUG_PRINT(BUDDY, "Selected UNMOVABLE zone for allocation (order %u)\n", order);
+    }
+    
+    // Allocate pages from selected zone
     uint64_t addr = buddy_alloc_pages(order, zone_type);
     
-    // Handle GFP_ZERO flag
-    if (addr != 0 && (flags & 0x04)) {  // GFP_ZERO
+    if (addr == 0) {
+        DEBUG_PRINT(BUDDY, "Allocation failed for order %u from zone %u\n", order, zone_type);
+        return 0;
+    }
+    
+    // Handle GFP_ZERO flag - zero-fill allocated pages
+    if (flags & GFP_ZERO) {
         uint64_t size = (1ULL << order) * BUDDY_PAGE_SIZE;
         volatile uint8_t *ptr = (volatile uint8_t *)(uintptr_t)addr;
         for (uint64_t i = 0; i < size; i++) {
             ptr[i] = 0;
         }
+        DEBUG_PRINT(BUDDY, "Zero-filled %llu bytes at 0x%llx\n", size, addr);
     }
     
     // Handle GFP_NOWAIT - already handled by buddy_alloc_pages returning 0 on failure

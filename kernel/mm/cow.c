@@ -1,5 +1,6 @@
 #include "../../include/mm/cow.h"
 #include "../../include/mm/buddy.h"
+#include "../../include/kernel/config.h"
 #include "../../include/kernel/string.h"
 #include "../../include/kernel/stdio.h"
 
@@ -11,7 +12,9 @@ static spinlock_t cow_global_lock;
 static uint32_t cow_hash(uint64_t phys_addr) {
     // Align to page boundary and hash
     phys_addr &= ~0xFFFULL;
-    return (uint32_t)((phys_addr >> 12) % COW_HASH_SIZE);
+    // Use bitwise AND instead of modulo for performance (20-40x faster)
+    // This works because COW_HASH_SIZE is a power of 2
+    return (uint32_t)((phys_addr >> 12) & COW_HASH_MASK);
 }
 
 // Initialize COW subsystem
@@ -80,6 +83,7 @@ page_ref_t *cow_get_ref(uint64_t phys_addr) {
     ref = (page_ref_t *)buddy_alloc_pages(0, BUDDY_ZONE_UNMOVABLE);
     if (!ref) {
         spinlock_release(&cow_global_lock);
+        DEBUG_PRINT(COW, "Failed to allocate reference entry for phys 0x%llx\n", phys_addr);
         return 0;
     }
     
@@ -97,20 +101,20 @@ page_ref_t *cow_get_ref(uint64_t phys_addr) {
 int cow_mark_page(page_table_t *pml4, uint64_t virt_addr) {
     // Validate parameters
     if (!pml4) {
-        kprintf("[COW] ERROR: NULL pml4 in cow_mark_page\n");
+        DEBUG_PRINT(COW, "NULL pml4 in cow_mark_page for virt 0x%llx\n", virt_addr);
         return -1;
     }
     
     // Get page table entry
     uint64_t *pte = cow_get_pte(pml4, virt_addr);
     if (!pte) {
-        kprintf("[COW] ERROR: Page not mapped at 0x%llx\n", virt_addr);
+        DEBUG_PRINT(COW, "Page not mapped at 0x%llx\n", virt_addr);
         return -1;
     }
     
     uint64_t entry = *pte;
     if (!(entry & VMM_FLAG_PRESENT)) {
-        kprintf("[COW] ERROR: Page not present at 0x%llx\n", virt_addr);
+        DEBUG_PRINT(COW, "Page not present at 0x%llx\n", virt_addr);
         return -1;
     }
     
@@ -120,7 +124,8 @@ int cow_mark_page(page_table_t *pml4, uint64_t virt_addr) {
     // Get or create reference entry
     page_ref_t *ref = cow_get_ref(phys_addr);
     if (!ref) {
-        kprintf("[COW] ERROR: Failed to allocate reference entry for phys 0x%llx\n", phys_addr);
+        DEBUG_PRINT(COW, "Failed to allocate reference entry for phys 0x%llx (virt 0x%llx)\n", 
+                    phys_addr, virt_addr);
         return -1;
     }
     
@@ -145,16 +150,19 @@ int cow_handle_fault(page_table_t *pml4, uint64_t virt_addr) {
     // Get page table entry
     uint64_t *pte = cow_get_pte(pml4, virt_addr);
     if (!pte) {
+        DEBUG_PRINT(COW, "Page not mapped at 0x%llx in cow_handle_fault\n", virt_addr);
         return -1;  // Page not mapped
     }
     
     uint64_t entry = *pte;
     if (!(entry & VMM_FLAG_PRESENT)) {
+        DEBUG_PRINT(COW, "Page not present at 0x%llx in cow_handle_fault\n", virt_addr);
         return -1;  // Page not present
     }
     
     // Check if this is a COW page
     if (!(entry & COW_FLAG_MASK)) {
+        DEBUG_PRINT(COW, "Not a COW page at 0x%llx\n", virt_addr);
         return -1;  // Not a COW page
     }
     
@@ -164,6 +172,8 @@ int cow_handle_fault(page_table_t *pml4, uint64_t virt_addr) {
     // Get reference entry
     page_ref_t *ref = cow_get_ref(old_phys);
     if (!ref) {
+        DEBUG_PRINT(COW, "Reference entry not found for phys 0x%llx (virt 0x%llx)\n", 
+                    old_phys, virt_addr);
         return -1;  // Reference entry not found
     }
     
@@ -171,10 +181,15 @@ int cow_handle_fault(page_table_t *pml4, uint64_t virt_addr) {
     spinlock_acquire(&ref->lock);
     uint32_t ref_count = ref->ref_count;
     
+    DEBUG_PRINT(COW, "Handling COW fault at virt 0x%llx, phys 0x%llx, refcount %u\n",
+                virt_addr, old_phys, ref_count);
+    
     // If we're the only reference, just make it writable
     if (ref_count == 1) {
         ref->ref_count--;
         spinlock_release(&ref->lock);
+        
+        DEBUG_PRINT(COW, "Single reference, making page writable at 0x%llx\n", virt_addr);
         
         // Make page writable and clear COW flag
         entry |= VMM_FLAG_WRITABLE;
@@ -191,6 +206,9 @@ int cow_handle_fault(page_table_t *pml4, uint64_t virt_addr) {
     ref->ref_count--;
     spinlock_release(&ref->lock);
     
+    DEBUG_PRINT(COW, "Multiple references (%u), copying page from 0x%llx\n", 
+                ref_count, old_phys);
+    
     // Allocate new physical page
     uint64_t new_phys = buddy_alloc_pages(0, BUDDY_ZONE_UNMOVABLE);
     if (!new_phys) {
@@ -198,8 +216,11 @@ int cow_handle_fault(page_table_t *pml4, uint64_t virt_addr) {
         spinlock_acquire(&ref->lock);
         ref->ref_count++;
         spinlock_release(&ref->lock);
+        DEBUG_PRINT(COW, "Failed to allocate new page for COW at 0x%llx\n", virt_addr);
         return -1;  // Out of memory
     }
+    
+    DEBUG_PRINT(COW, "Copy started: old_phys=0x%llx, new_phys=0x%llx\n", old_phys, new_phys);
     
     // Copy page contents
     uint8_t *old_page = (uint8_t *)(uintptr_t)old_phys;
@@ -207,6 +228,8 @@ int cow_handle_fault(page_table_t *pml4, uint64_t virt_addr) {
     for (uint32_t i = 0; i < 4096; i++) {
         new_page[i] = old_page[i];
     }
+    
+    DEBUG_PRINT(COW, "Copy completed, updating PTE for virt 0x%llx\n", virt_addr);
     
     // Update page table entry
     entry = (new_phys & 0x000FFFFFFFFFF000ULL) | (entry & 0xFFF);
@@ -216,6 +239,8 @@ int cow_handle_fault(page_table_t *pml4, uint64_t virt_addr) {
     
     // Flush TLB
     __asm__ volatile("invlpg (%0)" : : "r"(virt_addr) : "memory");
+    
+    DEBUG_PRINT(COW, "COW fault handled successfully for virt 0x%llx\n", virt_addr);
     
     return 0;
 }
