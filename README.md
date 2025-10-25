@@ -10,7 +10,7 @@
 
 <br/>
 
-[![BLACK-KRENEL](https://img.shields.io/badge/BLACK-KRENEL-v2.0.0-F75C03?style=for-the-badge&logo=fire&logoColor=white)](https://github.com/BLACK0X80/BLACK-KERNEL)
+[![BLACK-KERNEL](https://img.shields.io/badge/BLACK-KERNEL-v2.0.0-F75C03?style=for-the-badge&logo=fire&logoColor=white)](https://github.com/BLACK0X80/BLACK-KERNEL)
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=for-the-badge&logo=balance-scale&logoColor=white)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-x86__64-10F5CC?style=for-the-badge&logo=intel&logoColor=black)](https://github.com/BLACK0X80/BLACK-KERNEL)
 [![Stars](https://img.shields.io/github/stars/BLACK0X80/BLACK-KERNEL?style=for-the-badge&color=FFD700&logo=github)](https://github.com/BLACK0X80/BLACK-KERNEL/stargazers)
@@ -24,7 +24,7 @@
 
 ### **Freestanding x86_64 Kernel • Multiboot2 Compatible • Production Ready**
 
-**BLACK-KRENEL** is a high-performance freestanding kernel that brings the power of 64-bit long mode to bare metal. Built with modern memory management, advanced debugging, and production-grade drivers.
+**BLACK-KERNEL** is a high-performance freestanding kernel that brings the power of 64-bit long mode to bare metal. Built with modern memory management, advanced debugging, and production-grade drivers.
 
 [**Documentation**](#documentation) • [**Quick Start**](#quick-start) • [**Architecture**](#architecture)
 
@@ -39,7 +39,7 @@
 <td valign="top" width="33%">
 
 ### Core
-- [Why BLACK-KRENEL?](#why-black-krenel)
+- [Why BLACK-KERNEL?](#why-black-kernel)
 - [Key Features](#key-features)
 - [Memory Architecture](#memory-architecture)
 - [Installation](#installation)
@@ -68,7 +68,7 @@
 
 ---
 
-## Why BLACK-KRENEL?
+## Why BLACK-KERNEL?
 
 <div align="center">
 
@@ -76,7 +76,7 @@
 
 </div>
 
-Modern kernel development has always faced an impossible choice: **performance**, **safety**, or **simplicity**. BLACK-KRENEL breaks this paradigm with a revolutionary approach to bare-metal systems programming.
+Modern kernel development has always faced an impossible choice: **performance**, **safety**, or **simplicity**. BLACK-KERNEL breaks this paradigm with a revolutionary approach to bare-metal systems programming.
 
 <table>
 <tr>
@@ -124,7 +124,7 @@ Fast compilation
 
 <div align="center">
 
-| Aspect | Traditional Kernels | BLACK-KRENEL |
+| Aspect | Traditional Kernels | BLACK-KERNEL |
 |:------:|:------------------:|:----------:|
 | **Boot Process** | Complex multi-stage | Clean Multiboot2 transition |
 | **Memory Model** | Fixed allocation | Advanced zone-based system |
@@ -335,8 +335,8 @@ make run
 
 | Command | Description | Output |
 |:-------:|:------------|:-------|
-| `make` | Build kernel binary | `BLACK-KRENEL.bin` |
-| `make iso` | Create bootable ISO | `BLACK-KRENEL.iso` |
+| `make` | Build kernel binary | `BLACK-KERNEL.bin` |
+| `make iso` | Create bootable ISO | `BLACK-KERNEL.iso` |
 | `make run` | Build and run in QEMU | Serial + VGA output |
 | `make debug` | Start with GDB server | Port 1234 |
 | `make clean` | Remove build artifacts | Clean workspace |
@@ -358,7 +358,7 @@ make run
 [GCC]    kernel/mm/vmm.c → vmm.o
 [GCC]    kernel/mm/buddy.c → buddy.o
 [GCC]    kernel/mm/slab.c → slab.o
-[LD]     Linking BLACK-KRENEL.bin
+[LD]     Linking BLACK-KERNEL.bin
 [GRUB]   Creating bootable ISO
 [SUCCESS] Build completed in 2.34s
 ```
@@ -398,7 +398,7 @@ graph TB
 </div>
 
 ```
-BLACK-KRENEL/
+BLACK-KERNEL/
 ├── boot/                          [Boot & Initialization]
 │   ├── multiboot2.asm            - Multiboot2 header
 │   ├── boot.asm                  - 32→64 bit transition
@@ -467,7 +467,7 @@ BLACK-KRENEL/
 
 ### Comprehensive Debugging Framework
 
-BLACK-KRENEL features a zero-overhead debug system that can be completely disabled at compile time for production builds.
+BLACK-KERNEL features a zero-overhead debug system that can be completely disabled at compile time for production builds.
 
 </div>
 
@@ -631,7 +631,7 @@ DEBUG_ASSERT(ptr != NULL, "Null pointer dereference");
 ./debug.sh
 
 # Terminal 2: Connect GDB
-gdb BLACK-KRENEL.bin
+gdb BLACK-KERNEL.bin
 (gdb) target remote :1234
 (gdb) break kernel_main
 (gdb) continue
@@ -677,7 +677,7 @@ x/512gx 0xFFFFFFFF80000000
 disassemble kernel_main
 
 # Load symbols
-symbol-file BLACK-KRENEL.bin
+symbol-file BLACK-KERNEL.bin
 ```
 
 ---
@@ -727,7 +727,7 @@ make coverage
 
 ## Known Limitations
 
-While BLACK-KRENEL provides a solid foundation for bare-metal development, there are several areas for future improvement:
+While BLACK-KERNEL provides a solid foundation for bare-metal development, there are several areas for future improvement:
 
 <table>
 <tr>
