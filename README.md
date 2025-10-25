@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,6,10,15&height=200&section=header&text=BLACK-KRENEL&fontSize=90&fontColor=fff&animation=twinkling&fontAlignY=35" width="100%"/>
+<img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=0,2,6,10,15&height=200&section=header&text=BLACK-KERNEL&fontSize=90&fontColor=FFFFFF&animation=twinkling&fontAlignY=35" width="100%"/>
 
 <br/>
 
@@ -800,7 +800,7 @@ While BLACK-KERNEL provides a solid foundation for bare-metal development, there
 
 ```mermaid
 gantt
-    title BLACK-KRENEL Kernel Roadmap
+    title BLACK-KERNEL Kernel Roadmap
     dateFormat  YYYY-MM
     section Phase 1
     OOM Killer           :2026-01, 2026-03
@@ -1282,14 +1282,14 @@ int keyboard_available(void);
 
 <div align="center">
 
-**BLACK-KRENEL Kernel is open source under the MIT License**
+**BLACK-KERNEL is open source under the MIT License**
 
 </div>
 
 ```
 MIT License
 
-Copyright (c) 2025 BLACK-KRENEL Kernel Contributors
+Copyright (c) 2025 BLACK-KERNEL Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1316,7 +1316,7 @@ SOFTWARE.
 
 <div align="center">
 
-BLACK-KRENEL stands on the shoulders of giants and wouldn't be possible without the incredible work of the operating systems community.
+BLACK-KERNEL stands on the shoulders of giants and wouldn't be possible without the incredible work of the operating systems community.
 
 <br/>
 
@@ -1337,9 +1337,9 @@ BLACK-KRENEL stands on the shoulders of giants and wouldn't be possible without 
 - **OSDev.org** for comprehensive documentation and community support
 - **Intel & AMD** for detailed architecture manuals
 - **LLVM/Clang Project** for excellent toolchain support
-- **Early Contributors** who helped shape BLACK-KRENEL through feedback and code
+- **Early Contributors** who helped shape BLACK-KERNEL through feedback and code
 - **Testing Community** for finding edge cases and improving stability
-- **All Users** who trust BLACK-KRENEL for their bare-metal projects
+- **All Users** who trust BLACK-KERNEL for their bare-metal projects
 
 ---
 
@@ -1385,15 +1385,15 @@ Shell Scripts      ██░░░░░░░░   4.7%  (1,113 lines)
 <tr>
 <td width="50%" valign="top">
 
-**Q: What makes BLACK-KRENEL different from other kernels?**
+**Q: What makes BLACK-KERNEL different from other kernels?**
 
-A: BLACK-KRENEL combines production-grade memory management (buddy allocator, slab cache, COW, demand paging) with a comprehensive debug system, all in a clean and well-documented codebase. It's designed for learning and real-world use.
+A: BLACK-KERNEL combines production-grade memory management (buddy allocator, slab cache, COW, demand paging) with a comprehensive debug system, all in a clean and well-documented codebase. It's designed for learning and real-world use.
 
-**Q: Can I use BLACK-KRENEL in production?**
+**Q: Can I use BLACK-KERNEL in production?**
 
-A: Yes! BLACK-KRENEL 2.0 is stable and has been tested extensively. It's suitable for embedded systems, research projects, and specialized applications. However, it's not a drop-in replacement for Linux.
+A: Yes! BLACK-KERNEL 2.0 is stable and has been tested extensively. It's suitable for embedded systems, research projects, and specialized applications. However, it's not a drop-in replacement for Linux.
 
-**Q: What hardware does BLACK-KRENEL support?**
+**Q: What hardware does BLACK-KERNEL support?**
 
 A: Currently x86_64 with QEMU and physical hardware that supports Multiboot2. We have VGA text mode, PS/2 keyboard, serial port, and basic timer support. ARM64 support is planned for v4.0.
 
@@ -1406,7 +1406,7 @@ A: Drivers go in `kernel/drivers/`. Follow the existing patterns (VGA, serial, k
 
 **Q: Can I use C++ instead of C?**
 
-A: Not currently. BLACK-KRENEL is pure C for simplicity and predictability. C++ support (especially constructors/destructors in kernel context) adds complexity. However, you're welcome to experiment and submit a PR!
+A: Not currently. BLACK-KERNEL is pure C for simplicity and predictability. C++ support (especially constructors/destructors in kernel context) adds complexity. However, you're welcome to experiment and submit a PR!
 
 **Q: How does the debug system work?**
 
@@ -1414,11 +1414,11 @@ A: The debug system uses compile-time macros that completely disappear when `DEB
 
 **Q: What's the best way to learn kernel development?**
 
-A: Start by reading the BLACK-KRENEL source code (it's well-commented), check out [OSDev.org](https://wiki.osdev.org), read the Intel/AMD manuals, and don't be afraid to experiment. Break things, debug them, learn!
+A: Start by reading the BLACK-KERNEL source code (it's well-commented), check out [OSDev.org](https://wiki.osdev.org), read the Intel/AMD manuals, and don't be afraid to experiment. Break things, debug them, learn!
 
-**Q: Can I use BLACK-KRENEL for my university project?**
+**Q: Can I use BLACK-KERNEL for my university project?**
 
-A: Absolutely! BLACK-KRENEL is MIT licensed and perfect for educational purposes. Many students have used it as a base for OS course projects. Just make sure to cite it properly.
+A: Absolutely! BLACK-KERNEL is MIT licensed and perfect for educational purposes. Many students have used it as a base for OS course projects. Just make sure to cite it properly.
 
 </td>
 </tr>
@@ -1431,7 +1431,7 @@ A: Absolutely! BLACK-KRENEL is MIT licensed and perfect for educational purposes
 ## Start Your Kernel Journey
 
 ```bash
-# Clone BLACK-KRENEL
+# Clone BLACK-KERNEL
 git clone https://github.com/BLACK0X80/BLACK-KERNEL.git
 cd BLACK-KERNEL
 
@@ -1450,13 +1450,13 @@ make run
 
 <br/><br/>
 
-### Built with passion by the BLACK-KRENEL Team • 2025
+### Built with passion by the BLACK-KERNEL Team • 2025
 
 *"Bringing fire to bare metal — one instruction at a time"*
 
 <br/>
 
-**BLACK-KRENEL Kernel** — *Where systems programming meets elegance*
+**BLACK-KERNEL** — *Where systems programming meets elegance*
 
 <br/>
 
