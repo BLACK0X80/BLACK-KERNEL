@@ -314,8 +314,8 @@ wsl --set-default-version 2
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/BLACK-KRENEL.git
-cd BLACK-KRENEL
+git clone https://github.com/BLACK0X80/BLACK-KERNEL.git
+cd BLACK-KERNEL
 
 # Build kernel
 make
@@ -974,8 +974,8 @@ Mentor contributors
 
 ```bash
 # Fork and clone
-git clone https://github.com/YOUR_USERNAME/BLACK-KRENEL.git
-cd BLACK-KRENEL
+git clone https://github.com/YOUR_USERNAME/BLACK-KERNEL.git
+cd BLACK-KERNEL
 
 # Create feature branch
 git checkout -b feature/awesome-feature
@@ -1432,8 +1432,8 @@ A: Absolutely! BLACK-KRENEL is MIT licensed and perfect for educational purposes
 
 ```bash
 # Clone BLACK-KRENEL
-git clone https://github.com/yourusername/BLACK-KRENEL.git
-cd BLACK-KRENEL
+git clone https://github.com/BLACK0X80/BLACK-KERNEL.git
+cd BLACK-KERNEL
 
 # Build and run
 make run
@@ -1444,9 +1444,9 @@ make run
 
 <br/>
 
-[![Download](https://img.shields.io/badge/Download-Latest%20Release-F75C03?style=for-the-badge&logo=download&logoColor=white)](https://github.com/yourusername/BLACK-KRENEL/releases)
-[![Documentation](https://img.shields.io/badge/Read-Documentation-10F5CC?style=for-the-badge&logo=book&logoColor=black)](https://github.com/yourusername/BLACK-KRENEL/wiki)
-[![Examples](https://img.shields.io/badge/View-Examples-00D4FF?style=for-the-badge&logo=code&logoColor=black)](https://github.com/yourusername/BLACK-KRENEL/tree/main/examples)
+[![Download](https://img.shields.io/badge/Download-Latest%20Release-F75C03?style=for-the-badge&logo=download&logoColor=white)](https://github.com/BLACK0X80/BLACK-KERNEL/releases)
+[![Documentation](https://img.shields.io/badge/Read-Documentation-10F5CC?style=for-the-badge&logo=book&logoColor=black)](https://github.com/BLACK0X80/BLACK-KERNEL/wiki)
+[![Examples](https://img.shields.io/badge/View-Examples-00D4FF?style=for-the-badge&logo=code&logoColor=black)](https://github.com/BLACK0X80/BLACK-KERNEL/tree/main/examples)
 
 <br/><br/>
 
