@@ -10,14 +10,14 @@
 
 <br/>
 
-[![BLACK-KRENEL](https://img.shields.io/badge/BLACK-KRENEL-v2.0.0-F75C03?style=for-the-badge&logo=fire&logoColor=white)](https://github.com/BLACK0X80/BLACK-KRENEL)
+[![BLACK-KRENEL](https://img.shields.io/badge/BLACK-KRENEL-v2.0.0-F75C03?style=for-the-badge&logo=fire&logoColor=white)](https://github.com/BLACK0X80/BLACK-KERNEL)
 [![License](https://img.shields.io/badge/License-MIT-8B5CF6?style=for-the-badge&logo=balance-scale&logoColor=white)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-x86__64-10F5CC?style=for-the-badge&logo=intel&logoColor=black)](https://github.com/BLACK0X80/BLACK-KRENEL)
-[![Stars](https://img.shields.io/github/stars/BLACK0X80/BLACK-KRENEL?style=for-the-badge&color=FFD700&logo=github)](https://github.com/BLACK0X80/BLACK-KRENEL/stargazers)
+[![Platform](https://img.shields.io/badge/Platform-x86__64-10F5CC?style=for-the-badge&logo=intel&logoColor=black)](https://github.com/BLACK0X80/BLACK-KERNEL)
+[![Stars](https://img.shields.io/github/stars/BLACK0X80/BLACK-KERNEL?style=for-the-badge&color=FFD700&logo=github)](https://github.com/BLACK0X80/BLACK-KERNEL/stargazers)
 
-[![Build](https://img.shields.io/badge/Build-Passing-32CD32?style=for-the-badge&logo=check-circle&logoColor=white)](https://github.com/BLACK0X80/BLACK-KRENEL)
-[![Coverage](https://img.shields.io/badge/Coverage-96.5%25-00D4FF?style=for-the-badge&logo=codecov&logoColor=black)](https://github.com/BLACK0X80/BLACK-KRENEL)
-[![Architecture](https://img.shields.io/badge/64--bit-Long%20Mode-F75C03?style=for-the-badge&logo=amd&logoColor=white)](https://github.com/BLACK0X80/BLACK-KRENEL)
+[![Build](https://img.shields.io/badge/Build-Passing-32CD32?style=for-the-badge&logo=check-circle&logoColor=white)](https://github.com/BLACK0X80/BLACK-KERNEL)
+[![Coverage](https://img.shields.io/badge/Coverage-96.5%25-00D4FF?style=for-the-badge&logo=codecov&logoColor=black)](https://github.com/BLACK0X80/BLACK-KERNEL)
+[![Architecture](https://img.shields.io/badge/64--bit-Long%20Mode-F75C03?style=for-the-badge&logo=amd&logoColor=white)](https://github.com/BLACK0X80/BLACK-KERNEL)
 [![Bootloader](https://img.shields.io/badge/Multiboot2-Compatible-00D4FF?style=for-the-badge&logo=linux&logoColor=black)](https://www.gnu.org/software/grub/manual/multiboot2/)
 
 <br/>
@@ -39,7 +39,7 @@
 <td valign="top" width="33%">
 
 ### Core
-- [Why BLACK-KRENEL?](#why-BLACK-KRENEL)
+- [Why BLACK-KRENEL?](#why-black-krenel)
 - [Key Features](#key-features)
 - [Memory Architecture](#memory-architecture)
 - [Installation](#installation)
@@ -314,7 +314,7 @@ wsl --set-default-version 2
 
 ```bash
 # Clone the repository
-git clone https://github.com/BLACK0X80/BLACK-KRENEL.git
+git clone https://github.com/yourusername/BLACK-KRENEL.git
 cd BLACK-KRENEL
 
 # Build kernel
@@ -835,55 +835,6 @@ gantt
 
 </div>
 
-### Upcoming Features
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### Version 2.1.0 (Q1 2026)
-
-- ✨ Policy-based OOM killer
-- 📊 Per-process memory accounting
-- 🎯 Memory limit enforcement
-- 🔍 Memory leak detection
-- 📈 Real-time usage statistics
-- 🚨 Memory pressure notifications
-
-### Version 2.2.0 (Q2 2026)
-
-- 🧹 Memory defragmentation engine
-- ♻️ Automatic slab reclamation
-- 🎯 Zone-based compaction
-- 📊 Fragmentation metrics
-- ⚡ Background defrag daemon
-- 🔄 Live migration support
-
-</td>
-<td width="50%" valign="top">
-
-### Version 3.0.0 (Q4 2026)
-
-- 🚀 Per-CPU slab caches
-- 🌐 NUMA-aware allocation
-- 🔓 Lock-free allocation paths
-- ⚡ Zero-contention fast paths
-- 📊 CPU topology awareness
-- 🎯 Cache-line optimization
-
-### Version 4.0.0 (2027)
-
-- 🌍 ARM64 architecture support
-- 🔧 Architecture abstraction layer
-- 📱 Embedded system support
-- 🎮 RISC-V experimental port
-- 🌐 Multi-platform deployment
-- 📦 Modular architecture system
-
-</td>
-</tr>
-</table>
-
 ---
 
 ## Performance Benchmarks
@@ -1316,46 +1267,12 @@ int keyboard_available(void);
 
 ### Additional Resources
 
-| Resource | Description | Link |
-|:--------:|:------------|:----:|
-| **Wiki** | Detailed documentation | [View Wiki](https://github.com/BLACK0X80/BLACK-KRENEL/wiki) |
-| **API Docs** | Complete API reference | [View API](https://BLACK-KRENEL-kernel.org/api) |
-| **Tutorials** | Step-by-step guides | [View Tutorials](https://BLACK-KRENEL-kernel.org/tutorials) |
-| **Examples** | Code examples | [View Examples](https://github.com/BLACK0X80/BLACK-KRENEL/tree/main/examples) |
-| **Blog** | Development updates | [Read Blog](https://BLACK-KRENEL-kernel.org/blog) |
-
-</div>
-
----
-
-## Community
-
-<div align="center">
-
-### Join the BLACK-KRENEL Community
-
-<br/>
-
-[![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/BLACK-KRENEL)
-[![GitHub Discussions](https://img.shields.io/badge/GitHub-Discussions-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/BLACK0X80/BLACK-KRENEL/discussions)
-[![Twitter](https://img.shields.io/badge/Twitter-Follow-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/BLACK-KRENEL_kernel)
-[![Reddit](https://img.shields.io/badge/Reddit-Community-FF4500?style=for-the-badge&logo=reddit&logoColor=white)](https://reddit.com/r/BLACK-KRENEL_kernel)
-
-<br/>
-
-### Get Help
-
-- **Discord**: Real-time chat and support
-- **GitHub Discussions**: Long-form discussions and Q&A
-- **Stack Overflow**: Tag questions with `BLACK-KRENEL-kernel`
-- **Email**: support@BLACK-KRENEL-kernel.org
-
-### Stay Updated
-
-- **GitHub Releases**: Major version announcements
-- **Blog**: Development updates and tutorials
-- **Twitter**: Quick updates and community highlights
-- **Newsletter**: Monthly development digest
+| Resource | Description |
+|:--------:|:------------|
+| **Wiki** | Detailed documentation and tutorials |
+| **API Docs** | Complete API reference with examples |
+| **Examples** | Sample code and use cases |
+| **Architecture** | In-depth design documentation |
 
 </div>
 
@@ -1372,7 +1289,7 @@ int keyboard_available(void);
 ```
 MIT License
 
-Copyright (c) 2025 BLACK
+Copyright (c) 2025 BLACK-KRENEL Kernel Contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -1442,9 +1359,6 @@ BLACK-KRENEL stands on the shoulders of giants and wouldn't be possible without 
 | **Test Coverage** | 96.5% |
 | **Build Time** | 2.34s |
 | **Binary Size** | 89KB |
-| **Contributors** | 23 |
-| **Stars** | 1,847 |
-| **Forks** | 234 |
 
 ### Language Breakdown
 
@@ -1453,19 +1367,6 @@ Assembly (NASM)    ████████░░  42.3%  (9,956 lines)
 C                  ██████████  47.8%  (11,254 lines)
 Makefiles          █░░░░░░░░░   5.2%  (1,224 lines)
 Shell Scripts      ██░░░░░░░░   4.7%  (1,113 lines)
-```
-
-### Activity
-
-```
-Commits:           2,847
-Branches:          12
-Releases:          8
-Pull Requests:     187 (184 merged)
-Issues:            142 (128 closed)
-Contributors:      23
-First Commit:      Jan 2024
-Latest Release:    Oct 2025
 ```
 
 </div>
@@ -1531,7 +1432,7 @@ A: Absolutely! BLACK-KRENEL is MIT licensed and perfect for educational purposes
 
 ```bash
 # Clone BLACK-KRENEL
-git clone https://github.com/BLACK0X80/BLACK-KRENEL.git
+git clone https://github.com/yourusername/BLACK-KRENEL.git
 cd BLACK-KRENEL
 
 # Build and run
@@ -1543,14 +1444,13 @@ make run
 
 <br/>
 
-[![Download](https://img.shields.io/badge/Download-Latest%20Release-F75C03?style=for-the-badge&logo=download&logoColor=white)](https://github.com/BLACK0X80/BLACK-KRENEL/releases)
-[![Documentation](https://img.shields.io/badge/Read-Documentation-10F5CC?style=for-the-badge&logo=book&logoColor=black)](https://BLACK-KRENEL-kernel.org/docs)
-[![Examples](https://img.shields.io/badge/View-Examples-00D4FF?style=for-the-badge&logo=code&logoColor=black)](https://github.com/BLACK0X80/BLACK-KRENEL/tree/main/examples)
-[![Join Discord](https://img.shields.io/badge/Join-Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/BLACK-KRENEL)
+[![Download](https://img.shields.io/badge/Download-Latest%20Release-F75C03?style=for-the-badge&logo=download&logoColor=white)](https://github.com/yourusername/BLACK-KRENEL/releases)
+[![Documentation](https://img.shields.io/badge/Read-Documentation-10F5CC?style=for-the-badge&logo=book&logoColor=black)](https://github.com/yourusername/BLACK-KRENEL/wiki)
+[![Examples](https://img.shields.io/badge/View-Examples-00D4FF?style=for-the-badge&logo=code&logoColor=black)](https://github.com/yourusername/BLACK-KRENEL/tree/main/examples)
 
 <br/><br/>
 
-### Built with passion by BLACK • 2025
+### Built with passion by the BLACK-KRENEL Team • 2025
 
 *"Bringing fire to bare metal — one instruction at a time"*
 
